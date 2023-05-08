@@ -1,6 +1,6 @@
 <h1>Delivery Trucks</h1>
 
- ### [YouTube Demonstration](https://youtu.be/7eJexJVCqJo)
+ ### [YouTube Demonstration](WIP)
 
 <h2>Description</h2>
 In this project, delivery vehicles will be routed using an algorithm that will enable them to make all delivery deadlines while covering the fewest possible miles.
