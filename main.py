@@ -5,9 +5,9 @@ class CreateHashmap:
         self.arraySize = arraySize
         self.array = [None] * arraySize
 
-    #hash formula: (ASCII value of character * 2) % size of the array
+    #hash formula: (sum of ASCII value of each character) % size of the array
     def hasher(self, key):
-        return int(key) % self.arraySize
+        return key % self.arraySize
 
     def addKVPair(self, key, value):
         hash = self.hasher(key)
@@ -24,17 +24,16 @@ class CreateHashmap:
         return None
                      
 class Truck:
-    def __init__(self, speed, mileage, hasDriver,maxCapacity,pkgCount,pkgInventory,currentAddress):
+    def __init__(self, speed, mileage, hasDriver,maxCapacity,pkgInventory,currentAddress):
         self.speed = speed
         self.mileage = mileage
         self.hasDriver = hasDriver
         self.maxCapacity = maxCapacity
-        self.pkgCount = pkgCount
         self.pkgInventory = pkgInventory
         self.currentAddress = currentAddress
 
     def __str__(self):
-        return f"TRUCK INFO > Speed: {self.speed} MPH | Mileage: {self.mileage} miles | Has a Driver?: {self.hasDriver} | Max Capacity: {self.maxCapacity} | Package Count: {self.pkgCount} | Current Inventory: {self.pkgInventory} | Weight: {self.pkgWeight} | Address: {self.currentAddress}"
+        return f"TRUCK INFO > Speed: {self.speed} MPH | Mileage: {self.mileage} miles | Has a Driver?: {self.hasDriver} | Max Capacity: {self.maxCapacity} | Current Inventory: {self.pkgInventory} | Weight: {self.pkgWeight} | Address: {self.currentAddress}"
 
 class Package:
     def __init__(self, pkgID, pkgAddress, pkgCity, pkgState, pkgZip, pkgDeadline, pkgWeight, pkgStatus):
@@ -96,3 +95,7 @@ def getAddress(givenAddress):
 
 pkgHashmap = CreateHashmap(40)
 readPackages(pkgHashmap, "Data\WGUPS Package File.csv")
+
+truck1 = Truck(18, 0, True, 16, [1, 2, 4, 5, 7, 8, 10, 11, 12, 13, 36, 17, 19, 21, 22, 23], '4001 South 700 East')
+truck2 = Truck(18, 0, True, 16, [3, 14, 16, 38, 19, 20, 24, 26, 27, 29, 30, 31, 33, 34, 18, 15], '4001 South 700 East')
+truck3 = Truck(18, 0, False, 16, [6, 9, 25, 28, 32, 35, 37,39, 40], '4001 South 700 East') # packages dont arrive until 905AM
