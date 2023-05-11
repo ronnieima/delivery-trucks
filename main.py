@@ -1,3 +1,5 @@
+import csv
+
 class Hashmap:
     def __init__(self, arraySize):
         self.arraySize = arraySize
@@ -22,5 +24,21 @@ class Hashmap:
         hash = self.hasher
         self.array[hash] = None
 
+class Package:
+    def __init__(self, id, address, city, state, zip, deadline, mass, notes = None): 
+        self.id = id
+        self.address = address
+        self.city = city
+        self.state = state
+        self.zip = zip
+        self.deadline = deadline
+        self.mass = mass
+        self.notes = notes 
 
-
+    
+#read Package csv
+# import to Package()
+with open("WGUPS Package File.csv") as csvFile:
+    read = csv.reader(csvFile)
+    for line in read:
+        print(line)
