@@ -24,14 +24,17 @@ class CreateHashmap:
         return None
                      
 class Truck:
-    def __init__(self, hasDriver):
-        self.speed = 18
-        self.mileage = None
+    def __init__(self, speed, mileage, hasDriver,maxCapacity,pkgCount,pkgInventory,currentAddress):
+        self.speed = speed
+        self.mileage = mileage
         self.hasDriver = hasDriver
-        self.maxCapacity = 16
-        self.pkgCount = 0
-        self.pkgInventory = []
-        self.currentAddress = None
+        self.maxCapacity = maxCapacity
+        self.pkgCount = pkgCount
+        self.pkgInventory = pkgInventory
+        self.currentAddress = currentAddress
+
+    def __str__(self):
+        return f"TRUCK INFO > Speed: {self.speed} MPH | Mileage: {self.mileage} miles | Has a Driver?: {self.hasDriver} | Max Capacity: {self.maxCapacity} | Package Count: {self.pkgCount} | Current Inventory: {self.pkgInventory} | Weight: {self.pkgWeight} | Address: {self.currentAddress}"
 
 class Package:
     def __init__(self, pkgID, pkgAddress, pkgCity, pkgState, pkgZip, pkgDeadline, pkgWeight, pkgStatus):
@@ -73,11 +76,23 @@ with open("Data\WGUPS Distance Table.csv") as distanceInfo:
     for row in distanceData:
         adjMatrix.append(row[2:-1])
 
-def calcDistance(y, x):
+# calculates the distance between place x and place y
+def calcDistance(x, y):
     distance = adjMatrix[x][y]
-    print(distance)
+    if distance == '':
+        distance = adjMatrix[y][x]
+
+    return float(distance)
+    
             
+with open("Data\Address_File.csv") as addressInfo:
+    addressData = csv.reader(addressInfo)
+    addressData = list(addressData)
+
+def getAddress(givenAddress):
+    for address in addressData:
+        if givenAddress == address[2]:
+            return int(address[0])
 
 pkgHashmap = CreateHashmap(40)
 readPackages(pkgHashmap, "Data\WGUPS Package File.csv")
-calcDistance(4, 5)
