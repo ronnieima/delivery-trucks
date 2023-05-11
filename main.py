@@ -26,11 +26,12 @@ class CreateHashmap:
 class Truck:
     def __init__(self, hasDriver):
         self.speed = 18
+        self.mileage = None
         self.hasDriver = hasDriver
         self.maxCapacity = 16
         self.pkgCount = 0
         self.pkgInventory = []
-        self.currentAddress = 'at the hub'
+        self.currentAddress = None
 
 class Package:
     def __init__(self, pkgID, pkgAddress, pkgCity, pkgState, pkgZip, pkgDeadline, pkgWeight, pkgStatus):
@@ -44,21 +45,13 @@ class Package:
         self.pkgStatus = pkgStatus
 
     def __str__(self):
-        return f"ID: {self.pkgID} Address: {self.pkgAddress} City: {self.pkgID} State: {self.pkgID} Zip: {self.pkgID} Address: {self.pkgID} ID: {self.pkgID} Address: {self.pkgID}"
+        return f"PACKAGE INFO > ID: {self.pkgID} | Address: {self.pkgAddress} | City: {self.pkgCity} | State: {self.pkgState} | Zip: {self.pkgZip} | Deadline: {self.pkgDeadline} | Weight: {self.pkgWeight} | Status: {self.pkgStatus}"
 
-pkgHashmap = CreateHashmap(40)
-
-with open("WGUPS Package File.csv") as csvFile:
-    pkgCSV = csv.reader(csvFile)
-    pkgCSV = list(pkgCSV)    
-
-
-def loadPackages(pkgHashmap, pkgFile):
-    
+def readPackages(pkgHashmap, pkgFile):
     with open(pkgFile) as packageInfo:
-        reader = csv.reader(packageInfo)
-        next(reader)
-        for package in reader:
+        pkgData = csv.reader(packageInfo)
+        next(pkgData)
+        for package in pkgData:
             pkgID = int(package[0])
             pkgAddress = package[1]
             pkgCity = package[2]
@@ -72,7 +65,19 @@ def loadPackages(pkgHashmap, pkgFile):
 
             pkgHashmap.addKVPair(pkgID, pkg)
 
+# load adjacency matrix with distances
+adjMatrix = []
+with open("Data\WGUPS Distance Table.csv") as distanceInfo:
+    distanceData = csv.reader(distanceInfo)
+    next(distanceData)
+    for row in distanceData:
+        adjMatrix.append(row[2:-1])
 
+def calcDistance(y, x):
+    distance = adjMatrix[x][y]
+    print(distance)
+            
 
-loadPackages(pkgHashmap, "WGUPS Package File.csv")
-print(pkgHashmap.searchKey(4))
+pkgHashmap = CreateHashmap(40)
+readPackages(pkgHashmap, "Data\WGUPS Package File.csv")
+calcDistance(4, 5)
