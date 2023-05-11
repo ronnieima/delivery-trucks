@@ -99,3 +99,11 @@ readPackages(pkgHashmap, "Data\WGUPS Package File.csv")
 truck1 = Truck(18, 0, True, 16, [1, 2, 4, 5, 7, 8, 10, 11, 12, 13, 36, 17, 19, 21, 22, 23], '4001 South 700 East')
 truck2 = Truck(18, 0, True, 16, [3, 14, 16, 38, 19, 20, 24, 26, 27, 29, 30, 31, 33, 34, 18, 15], '4001 South 700 East')
 truck3 = Truck(18, 0, False, 16, [6, 9, 25, 28, 32, 35, 37,39, 40], '4001 South 700 East') # packages dont arrive until 905AM
+
+# TODO sort package list
+#def nearest_neighbor(truck)
+#   find package with shortest distance
+    #for package in packagelist
+        # if package[counter] < lowestDistance:
+            #lowestDistance = package[counter]
+    #
