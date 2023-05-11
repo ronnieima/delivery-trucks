@@ -17,6 +17,10 @@ class Hashmap:
     def searchKey(self, key):
         hash = self.hasher(key)
         return self.array[hash]
+    
+    def deleteKey(self, key):
+        hash = self.hasher
+        self.array[hash] = None
 
 
 
