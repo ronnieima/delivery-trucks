@@ -22,9 +22,7 @@ class CreateHashmap:
             if key == KVPair[0]:
                 return KVPair[1]
         return None
-                
-        
-
+                     
 class Truck:
     def __init__(self, hasDriver):
         self.speed = 18
@@ -33,8 +31,6 @@ class Truck:
         self.pkgCount = 0
         self.pkgInventory = []
         self.currentAddress = 'at the hub'
-
-
 
 class Package:
     def __init__(self, pkgID, pkgAddress, pkgCity, pkgState, pkgZip, pkgDeadline, pkgWeight, pkgStatus):
