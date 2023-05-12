@@ -114,9 +114,6 @@ def minDistanceFrom(fromAddress, truckPackages):
             minAddress = toAddress
     return minAddress
 
-def getPackageAddressName(pkgID, truck):
-    return pkgHashmap.searchKey(truck.pkgInventory[0]).pkgAddress
-
 def truckDeliverPackages(truck: Truck):
     unvisited = []
 
