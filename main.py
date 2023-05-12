@@ -1,4 +1,5 @@
 import csv
+import datetime
 
 class CreateHashmap:
     def __init__(self, arraySize):
@@ -24,15 +25,17 @@ class CreateHashmap:
             if key == KVPair[0]:
                 return KVPair[1]
         return None
+    
                      
 class Truck:
-    def __init__(self, speed, mileage, hasDriver,maxCapacity,pkgInventory,currentAddress):
+    def __init__(self, speed, mileage, pkgInventory,currentAddress, timeDepart):
         self.speed = speed
         self.mileage = mileage
-        self.hasDriver = hasDriver
-        self.maxCapacity = maxCapacity
         self.pkgInventory = pkgInventory
         self.currentAddress = currentAddress
+        self.timeDepart = timeDepart
+        self.timeCurrent = self.timeDepart
+       
     
     def __str__(self):
         return f"TRUCK INFO > Speed: {self.speed} MPH | Mileage: {self.mileage} miles | Has a Driver?: {self.hasDriver} | Max Capacity: {self.maxCapacity} | Current Inventory: {self.pkgInventory} | Weight: {self.pkgWeight} | Address: {self.currentAddress}"
@@ -111,22 +114,56 @@ def minDistanceFrom(fromAddress, truckPackages):
             minAddress = toAddress
     return minAddress
 
+def getPackageAddressName(pkgID, truck):
+    return pkgHashmap.searchKey(truck.pkgInventory[0]).pkgAddress
+
+def truckDeliverPackages(truck: Truck):
+    unvisited = []
+
+    for packageID in truck.pkgInventory:
+        pkg = pkgHashmap.searchKey(packageID)
+        unvisited.append(pkg)
+
+    truck.pkgInventory.clear()
+
+    while len(unvisited) > 0:
+        nextAddress = 3000
+        nextPackage = None
+        for package in unvisited:
+            if distanceBetween(getAddress(truck.currentAddress), getAddress(package.pkgAddress)) <= nextAddress:
+                nextAddress = distanceBetween(getAddress(truck.currentAddress), getAddress(package.pkgAddress))
+                nextPackage = package
+                
+                truck.pkgInventory.append(nextPackage.pkgID)
+                
+                unvisited.remove(nextPackage)
+                
+                truck.mileage += nextAddress
+                
+                truck.address = nextPackage.pkgAddress
+                
+                truck.timeCurrent += datetime.timedelta(hours=nextAddress / 18)
+                nextPackage.delivery_time = truck.timeCurrent
+                nextPackage.departure_time = truck.timeDepart
+            
+            
+    
+
+
+
 pkgHashmap = CreateHashmap(40)
 loadPackageData(pkgHashmap)
 loadDistanceData(distanceData)
 loadAddressData(addressData)
 
-truck1 = Truck(18, 0, True, 16, [1, 2, 4, 5, 7, 8, 10, 11, 12, 13, 36, 17, 19, 21, 22, 23], '4001 South 700 East')
-truck2 = Truck(18, 0, True, 16, [3, 14, 16, 38, 19, 20, 24, 26, 27, 29, 30, 31, 33, 34, 18, 15], '4001 South 700 East')
-truck3 = Truck(18, 0, False, 16, [6, 9, 25, 28, 32, 35, 37,39, 40], '4001 South 700 East') # packages dont arrive until 905AM
-minfrom1 = minDistanceFrom(0, truck1.pkgInventory)
-print(f"{minfrom1} + 'min distance from 1'")
-#NEAREST NEIGHBOR ALGORITHM:
-#   sort the array of packages by distance
-        #pick first index
-        #compare with each to find the lowest distance between index
-            # if index is lower than compared: swap 
-        #index++
-#   calculator the total distance of each package to update the truck's mileage variable
-#   calculate the time each package is delivered (distance * speed) to hours:minutes 
+truck1 = Truck(18, 0, [1, 2, 4, 5, 7, 8, 10, 11, 12, 13, 36, 17, 19, 21, 22, 23], '4001 South 700 East', datetime.timedelta(hours=8))
+truck2 = Truck(18, 0, [9, 14, 16, 38, 19, 20, 24, 26, 27, 29, 30, 31, 33, 3, 18, 15], '4001 South 700 East', datetime.timedelta(hours=10, minutes=20))
+truck3 = Truck(18, 0, [6, 34, 25, 28, 32, 35, 37,39, 40], '4001 South 700 East', datetime.timedelta(hours=9, minutes=5)) # packages dont arrive until 905AM
+
+
+print(truckDeliverPackages(truck1))
+print(truckDeliverPackages(truck2))
+print(truckDeliverPackages(truck3))
+
+
 
