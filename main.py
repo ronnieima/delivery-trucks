@@ -152,7 +152,6 @@ def minDistanceFrom(fromAddress, truckPackages):
 
 # Uses the nearest neighbor algorithm to deliver a truck's packages
 def truckDeliverPackages(truck: Truck):
-    print(f"truck departs on {truck.timeDepart}")
     # Creates a list of unvisited packages
     unvisited = []
 
@@ -190,8 +189,6 @@ def truckDeliverPackages(truck: Truck):
         truck.timeCurrent += datetime.timedelta(hours=nextAddressTime / 18) #18mph speed
         nextPackage.timeDelivery = truck.timeCurrent
         nextPackage.timeDepart = truck.timeDepart
-        print(f"Package {nextPackage.pkgID} delivered on {truck.timeCurrent} at {nextPackage.pkgAddress}") #DEBUG
-    print(f"packages for truck = {truck.pkgInventory}")
 
 # Displays menu
 def menu():
@@ -245,35 +242,45 @@ while selection != '4':
             # Checks the status of each package at the end of the day
             pkg.checkStatus(timeEOD)
             print(pkg)
+        print("")
     # Search a package status by timestamp
     elif selection == '2':
-        # Prompts a time to search
-        time = input("Please enter time in HH:MM:SS format: ")
-        (h, m, s) = time.split(":")
-        time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
-        
-        # Prompts a package to search
-        pkgID = input("Please enter a package ID: ")
-        package = pkgHashmap.searchKey(int(pkgID))
-        # Checks the status of each package at the given time
-        package.checkStatus(time)
+        try:
+            # Prompts a time to search
+            time = input("Please enter time in HH:MM:SS format: ")
+            (h, m, s) = time.split(":")
+            time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+            
+            # Prompts a package to search
+            pkgID = input("Please enter a package ID: ")
+            package = pkgHashmap.searchKey(int(pkgID))
+            # Checks the status of each package at the given time
+            package.checkStatus(time)
 
-        print("")
-        printHeaders()
-        print(package)
+            print("")
+            printHeaders()
+            print(package)
+            print("")
+        except:
+            print("Invalid input! Please try again.\n")
     # Search all package status by timestamp
     elif selection == '3': 
-        # Prompts a time to search
-        time = input("Please enter time in HH:MM:SS format: ")
-        (h, m, s) = time.split(":")
-        time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+        try:
+            # Prompts a time to search
+            time = input("Please enter time in HH:MM:SS format: ")
+        
+            (h, m, s) = time.split(":")
+            time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
 
-        printHeaders()
-        # Iterates through each package and displays its status during a given time
-        for packageID in range(1,41):
-            pkg = pkgHashmap.searchKey(packageID)
-            pkg.checkStatus(time)  
-            print(pkg)
+            printHeaders()
+            # Iterates through each package and displays its status during a given time
+            for packageID in range(1,41):
+                pkg = pkgHashmap.searchKey(packageID)
+                pkg.checkStatus(time)  
+                print(pkg)
+            print("")
+        except:
+            print("Invalid input! Please try again.\n")
     # Exit
     elif selection == '4':
         print("Exiting program.")
