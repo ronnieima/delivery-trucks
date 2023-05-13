@@ -1,6 +1,10 @@
 import csv
 import datetime
 
+#TODO colorcode statuses?
+#TODO 
+
+#TODO handle collisions by chaining
 class CreateHashmap:
     def __init__(self, arraySize):
         self.arraySize = arraySize
@@ -40,7 +44,7 @@ class Package:
         self.timeDepart = None
 
     def __str__(self):
-        print(f"{self.pkgID:<10}{self.pkgAddress:<40}{self.pkgCity:<20}{self.pkgState:<10}{self.pkgZip:<10}{self.pkgWeight:<10}{str(self.timeDepart):<15}{str(self.pkgStatus):<15}{str(self.timeDelivery):<10}{self.pkgDeadline:<10}", end = "  ")
+        print(f"{self.pkgID:^10}{self.pkgAddress:^40}{self.pkgCity:^20}{self.pkgState:^10}{self.pkgZip:^10}{self.pkgWeight:^10}{str(self.timeDepart):^15}{str(self.pkgStatus):^15}{str(self.timeDelivery):^20}{self.pkgDeadline:^10}", end = "  ")
         return ""
 
     def checkStatus(self, deltaTime):
@@ -158,7 +162,7 @@ def truckDeliverPackages(truck: Truck):
     print(f"packages for truck = {truck.pkgInventory}")
             
             
-    
+
 
 
 
@@ -178,6 +182,11 @@ def menu():
     print("3. Get All Package Status with a Time ")
     print("4. Exit the Program")
 
+def printHeaders():
+    print("=" * 160)
+    print(f"{'|ID|':^10}{'|Address|':^40}{'|City|':^20}{'|State|':^10}{'|Zip|':^10}{'|Weight|':^10}{'|Time Departed|':^15}{'|Status|':^15}{'|Time Delivered|':^20}{'|Deadline|':^10}")
+    print("=" * 160)
+
 # TODO wait for truck 1 to come back so truck 2 can go
 truckDeliverPackages(truck1)
 truckDeliverPackages(truck2)
@@ -189,8 +198,7 @@ while selection != '4':
     selection = input("Select an option: ")
     if selection == '1':
         print(f"Total mileage for the route: {truck1.mileage + truck2.mileage + truck3.mileage}")
-        print(f"{'ID':<10}{'Address':<40}{'City':<20}{'State':<10}{'Zip':<10}{'Weight':<10}{'Departed on':<15}{'Status':<15}{'Delivery Time':<10}{'Deadline':<10}")
-
+        printHeaders()
         # End of day time is 5PM
         timeEOD = datetime.timedelta(hours=17)
 
@@ -209,17 +217,17 @@ while selection != '4':
         package.checkStatus(time)
 
         print("")
-        print(f"{'ID':<10}{'Address':<40}{'City':<20}{'State':<10}{'Zip':<10}{'Weight':<10}{'Departed on':<15}{'Status':<15}{'Delivery Time':<10}{'Deadline':<10}")
+        printHeaders()
         print(package)
 
     elif selection == '3':
         time = input("Please enter time in HH:MM:SS format: ")
         (h, m, s) = time.split(":")
         time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
-
+        printHeaders()
         for packageID in range(1,41):
             pkg = pkgHashmap.searchKey(packageID)
-            pkg.checkStatus(time)
+            pkg.checkStatus(time)  
             print(pkg)
     elif selection == '4':
         print("Exiting program.")
