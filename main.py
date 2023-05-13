@@ -195,6 +195,9 @@ def truckDeliverPackages(truck: Truck):
 
 # Displays menu
 def menu():
+    print("=" * 60)
+    print(f"| Welcome to Western Governors University Parcel Service! |")
+    print("=" * 60)
     print("\n1. Display total mileage and all of the packages' status")
     print("2. Search a package status by timestamp")
     print("3. Search all package status by timestamp ")
@@ -228,7 +231,7 @@ selection = 0
 # Command line interface keeps running until user exits by inputting 4
 while selection != '4':
     menu()
-    selection = input("Select an option: ")
+    selection = input("\nSelect an option: ")
     # Displays total mileage and all of the packages' status"
     if selection == '1':
         print(f"Total mileage for the route: {truck1.mileage + truck2.mileage + truck3.mileage}")
