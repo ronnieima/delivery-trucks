@@ -26,20 +26,6 @@ class CreateHashmap:
                 return KVPair[1]
         return None
     
-                     
-class Truck:
-    def __init__(self, speed, mileage, pkgInventory,currentAddress, timeDepart):
-        self.speed = speed
-        self.mileage = mileage
-        self.pkgInventory = pkgInventory
-        self.currentAddress = currentAddress
-        self.timeDepart = timeDepart
-        self.timeCurrent = self.timeDepart
-       
-    
-    def __str__(self):
-        return f"TRUCK INFO > Speed: {self.speed} MPH | Mileage: {self.mileage} miles | Has a Driver?: {self.hasDriver} | Max Capacity: {self.maxCapacity} | Current Inventory: {self.pkgInventory} | Weight: {self.pkgWeight} | Address: {self.currentAddress}"
-
 class Package:
     def __init__(self, pkgID, pkgAddress, pkgCity, pkgState, pkgZip, pkgDeadline, pkgWeight, pkgStatus):
         self.pkgID = pkgID
@@ -54,7 +40,8 @@ class Package:
         self.timeDepart = None
 
     def __str__(self):
-        return f"{self.pkgID}   {self.pkgAddress}           {self.pkgCity}   {self.pkgState}   {self.pkgZip}   {self.pkgDeadline}   {self.pkgWeight}   {self.pkgStatus}"
+        print(f"{self.pkgID:<10}{self.pkgAddress:<40}{self.pkgCity:<20}{self.pkgState:<10}{self.pkgZip:<10}{self.pkgWeight:<10}{str(self.timeDepart):<15}{str(self.pkgStatus):<15}{str(self.timeDelivery):<10}{self.pkgDeadline:<10}", end = "  ")
+        return ""
 
     def checkStatus(self, deltaTime):
         if deltaTime > self.timeDelivery:
@@ -63,6 +50,19 @@ class Package:
             self.pkgStatus = "En route!"
         else: 
             self.pkgStatus = "At the hub!"
+                     
+class Truck:
+    def __init__(self, speed, mileage, pkgInventory,currentAddress, timeDepart):
+        self.speed = speed
+        self.mileage = mileage
+        self.pkgInventory = pkgInventory
+        self.currentAddress = currentAddress
+        self.timeDepart = timeDepart
+        self.timeCurrent = self.timeDepart
+       
+    
+    def __str__(self):
+        return f"TRUCK INFO > Speed: {self.speed} MPH | Mileage: {self.mileage} miles | Has a Driver?: {self.hasDriver} | Max Capacity: {self.maxCapacity} | Current Inventory: {self.pkgInventory} | Weight: {self.pkgWeight} | Address: {self.currentAddress}"
 
 # load adjacency matrix with distances
 with open("traveling-salesman\Data\WGUPS Distance Table.csv") as distanceInfo:
@@ -86,7 +86,7 @@ def loadPackageData(pkgHashmap):
             pkgZip = package[4]
             pkgDeadline = package[5]
             pkgWeight = package[6]
-            pkgStatus = 'at the hub'
+            pkgStatus = None
 
             pkg = Package(pkgID, pkgAddress, pkgCity, pkgState, pkgZip, pkgDeadline, pkgWeight, pkgStatus)
 
@@ -133,25 +133,29 @@ def truckDeliverPackages(truck: Truck):
 
     truck.pkgInventory.clear()
 
+    
     while len(unvisited) > 0:
-        nextAddress = 3000
+        nextAddressTime = 2000
         nextPackage = None
         for package in unvisited:
-            if distanceBetween(getAddress(truck.currentAddress), getAddress(package.pkgAddress)) <= nextAddress:
-                nextAddress = distanceBetween(getAddress(truck.currentAddress), getAddress(package.pkgAddress))
+            if distanceBetween(getAddress(truck.currentAddress), getAddress(package.pkgAddress)) <= nextAddressTime:
+                nextAddressTime = distanceBetween(getAddress(truck.currentAddress), getAddress(package.pkgAddress))
                 nextPackage = package
                 
-                truck.pkgInventory.append(nextPackage.pkgID)
-                
-                unvisited.remove(nextPackage)
-                
-                truck.mileage += nextAddress
-                
-                truck.address = nextPackage.pkgAddress
-                
-                truck.timeCurrent += datetime.timedelta(hours=nextAddress / 18) #18mph speed
-                nextPackage.timeDelivery = truck.timeCurrent
-                nextPackage.timeDepart = truck.timeDepart
+        truck.pkgInventory.append(nextPackage.pkgID)
+        
+        unvisited.remove(nextPackage)
+        
+
+        truck.mileage += nextAddressTime
+        
+        truck.currentAddress = nextPackage.pkgAddress
+        
+        truck.timeCurrent += datetime.timedelta(hours=nextAddressTime / 18) #18mph speed
+        nextPackage.timeDelivery = truck.timeCurrent
+        nextPackage.timeDepart = truck.timeDepart
+        print(f"Package {nextPackage.pkgID} delivered on {truck.timeCurrent} at {nextPackage.pkgAddress}") #DEBUG
+    print(f"packages for truck = {truck.pkgInventory}")
             
             
     
@@ -163,52 +167,63 @@ loadPackageData(pkgHashmap)
 loadDistanceData(distanceData)
 loadAddressData(addressData)
 
-truck1 = Truck(18, 0, [1,2,4,5,7,8,10,11,12,17,21,22,23,24,25,27], '4001 South 700 East', datetime.timedelta(hours=8))
-truck2 = Truck(18, 0, [3,6,13,14,15,16,18,19,20,25,29,30,34,36,37,38,40], '4001 South 700 East', datetime.timedelta(hours=10, minutes=20))
-truck3 = Truck(18, 0, [9,28,31,32,33,35,39], '4001 South 700 East', datetime.timedelta(hours=9, minutes=5)) # packages dont arrive until 905AM
+truck1 = Truck(18, 0, [15,14,13,16,20,19,17,29,30,31,34,37], '4001 South 700 East', datetime.timedelta(hours=8))
+truck2 = Truck(18, 0, [2,3,4,5,7,8,9,10,11,12,18,21,22,23,24,36,38], '4001 South 700 East', datetime.timedelta(hours=10, minutes=20))
+truck3 = Truck(18, 0, [1,6,25,26,27,28,32,33,35,39,40], '4001 South 700 East', datetime.timedelta(hours=9, minutes=5)) # packages dont arrive until 905AM
 
 
 def menu():
-    print("1. Print All Package Status and Total Mileage")
+    print("\n1. Print All Package Status and Total Mileage")
     print("2. Get a Single Package Status with a Time")
     print("3. Get All Package Status with a Time ")
     print("4. Exit the Program")
 
+# TODO wait for truck 1 to come back so truck 2 can go
 truckDeliverPackages(truck1)
 truckDeliverPackages(truck2)
 truckDeliverPackages(truck3)
 
-menu()
-selection = input("Select an option: ")
-if selection == '1':
-    print(f"Total mileage for the route: {truck1.mileage + truck2.mileage + truck3.mileage}")
-    print("ID   Adress          City    State   Zip     Deadline        Weight      Status")
-    for packageID in range(1,41):
-        pkg = pkgHashmap.searchKey(packageID)
-        print(pkg)
+selection = 0
+while selection != '4':
+    menu()
+    selection = input("Select an option: ")
+    if selection == '1':
+        print(f"Total mileage for the route: {truck1.mileage + truck2.mileage + truck3.mileage}")
+        print(f"{'ID':<10}{'Address':<40}{'City':<20}{'State':<10}{'Zip':<10}{'Weight':<10}{'Departed on':<15}{'Status':<15}{'Delivery Time':<10}{'Deadline':<10}")
 
-elif selection == '2':
-    time = input("Please enter time in HH:MM:SS format: ")
-    (h, m, s) = time.split(":")
-    time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
-    
-    pkgID = input("Please enter a package ID: ")
-    package = pkgHashmap.searchKey(int(pkgID))
-    package.checkStatus(time)
-    print(package)
+        # End of day time is 5PM
+        timeEOD = datetime.timedelta(hours=17)
 
-elif selection == '3':
-    time = input("Please enter time in HH:MM:SS format: ")
-    (h, m, s) = time.split(":")
-    time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+        for packageID in range(1,41):
+            pkg = pkgHashmap.searchKey(packageID)
+            pkg.checkStatus(timeEOD)
+            print(pkg)
 
-    for packageID in range(1,41):
-        pkg = pkgHashmap.searchKey(packageID)
-        pkg.checkStatus(time)
-        print(pkg)
-elif selection == '4':
-    print("Exiting program.")
-    exit()
+    elif selection == '2':
+        time = input("Please enter time in HH:MM:SS format: ")
+        (h, m, s) = time.split(":")
+        time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+        
+        pkgID = input("Please enter a package ID: ")
+        package = pkgHashmap.searchKey(int(pkgID))
+        package.checkStatus(time)
+
+        print("")
+        print(f"{'ID':<10}{'Address':<40}{'City':<20}{'State':<10}{'Zip':<10}{'Weight':<10}{'Departed on':<15}{'Status':<15}{'Delivery Time':<10}{'Deadline':<10}")
+        print(package)
+
+    elif selection == '3':
+        time = input("Please enter time in HH:MM:SS format: ")
+        (h, m, s) = time.split(":")
+        time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+
+        for packageID in range(1,41):
+            pkg = pkgHashmap.searchKey(packageID)
+            pkg.checkStatus(time)
+            print(pkg)
+    elif selection == '4':
+        print("Exiting program.")
+        exit()
 
 
 
