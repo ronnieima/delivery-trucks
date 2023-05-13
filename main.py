@@ -2,7 +2,6 @@ import csv
 import datetime
 
 #TODO colorcode statuses?
-#TODO 
 
 #TODO handle collisions by chaining
 class CreateHashmap:
@@ -162,10 +161,6 @@ def truckDeliverPackages(truck: Truck):
     print(f"packages for truck = {truck.pkgInventory}")
             
             
-
-
-
-
 pkgHashmap = CreateHashmap(40)
 loadPackageData(pkgHashmap)
 loadDistanceData(distanceData)
