@@ -99,6 +99,7 @@ with open("traveling-salesman\Data\WGUPS Package File.csv") as packageInfo:
 
 # Extracts attributes from each package to create a Package object
 def loadPackageData(pkgHashmap):
+        # Load attributes into variables
         for package in packageCSV:
             pkgID = int(package[0])
             pkgAddress = package[1]
@@ -109,9 +110,10 @@ def loadPackageData(pkgHashmap):
             pkgWeight = package[6]
             pkgStatus = None
 
+            # Instantiates the Package object
             pkg = Package(pkgID, pkgAddress, pkgCity, pkgState, pkgZip, pkgDeadline, pkgWeight, pkgStatus)
 
-            # Adds the package into the hashmap 
+            # Adds the Package object into the hashmap using the package ID as the key
             pkgHashmap.addKVPair(pkgID, pkg)
 
 # Creates the adjacency table from the distance list
@@ -141,10 +143,13 @@ def distanceBetween(x, y):
 
 # Calculates the closest address to a given address
 def minDistanceFrom(fromAddress, truckPackages):
+    # Finds distance between given address and truck's first package
     minDistance = (distanceBetween(fromAddress, getAddress(pkgHashmap.searchKey(truckPackages[0]).pkgAddress)))
+    # Iterates through each package and compares its distance to the current smallest distance
     for package in truckPackages:
         toAddress = getAddress(pkgHashmap.searchKey(package).pkgAddress)
         distance = distanceBetween(fromAddress, toAddress)
+        # Looks for the smallest distance
         if (distance < minDistance):
             minDistance = distance
             minAddress = toAddress
@@ -162,12 +167,12 @@ def truckDeliverPackages(truck: Truck):
 
     truck.pkgInventory.clear()
 
-
+    # Loops until all packages are visited
     while len(unvisited) > 0:
         nextAddressTime = 5000
         nextPackage = None
 
-        # Determines the closes package to the truck's current address
+        # Determines the closest package to the truck's current address
         for package in unvisited:
             if distanceBetween(getAddress(truck.currentAddress), getAddress(package.pkgAddress)) <= nextAddressTime:
                 nextAddressTime = distanceBetween(getAddress(truck.currentAddress), getAddress(package.pkgAddress))
