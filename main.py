@@ -83,17 +83,17 @@ class Truck:
        
 
 # Loads data from the distance table file into a list
-with open("traveling-salesman\Data\WGUPS Distance Table.csv") as distanceInfo:
+with open("Data\WGUPS Distance Table.csv") as distanceInfo:
     distanceCSV = csv.reader(distanceInfo)
     distanceCSV = list(distanceCSV)
 
 # Loads data from the address file into a list
-with open("traveling-salesman\Data\Address_File.csv") as addressInfo:
+with open("Data\Address_File.csv") as addressInfo:
     addressCSV = csv.reader(addressInfo)
     addressCSV = list(addressCSV)
 
 # Loads data from the package file into a list
-with open("traveling-salesman\Data\WGUPS Package File.csv") as packageInfo:
+with open("Data\WGUPS Package File.csv") as packageInfo:
     packageCSV = csv.reader(packageInfo)
     packageCSV = list(packageCSV)
 
@@ -157,6 +157,9 @@ def minDistanceFrom(fromAddress, truckPackages):
 
 # Uses the nearest neighbor algorithm to deliver a truck's packages
 def truckDeliverPackages(truck: Truck):
+    # Each truck's speed is 18MPH
+    truckSpeed = 18
+
     # Creates a list of unvisited packages
     unvisited = []
 
@@ -169,13 +172,13 @@ def truckDeliverPackages(truck: Truck):
 
     # Loops until all packages are visited
     while len(unvisited) > 0:
-        nextAddressTime = 5000
+        nextAddressDistance = 5000
         nextPackage = None
 
         # Determines the closest package to the truck's current address
         for package in unvisited:
-            if distanceBetween(getAddress(truck.currentAddress), getAddress(package.pkgAddress)) <= nextAddressTime:
-                nextAddressTime = distanceBetween(getAddress(truck.currentAddress), getAddress(package.pkgAddress))
+            if distanceBetween(getAddress(truck.currentAddress), getAddress(package.pkgAddress)) <= nextAddressDistance:
+                nextAddressDistance = distanceBetween(getAddress(truck.currentAddress), getAddress(package.pkgAddress))
                 nextPackage = package
         
         # Add nearest package ID to the delivery queue
@@ -185,13 +188,13 @@ def truckDeliverPackages(truck: Truck):
         unvisited.remove(nextPackage)
         
         # Add to truck's total mileage
-        truck.mileage += nextAddressTime
+        truck.mileage += nextAddressDistance
         
         # Truck drives to the next address. Replace current address with the next address.
         truck.currentAddress = nextPackage.pkgAddress
         
         # Keeps track of delivery and departure times of the truck
-        truck.timeCurrent += datetime.timedelta(hours=nextAddressTime / 18) #18mph speed
+        truck.timeCurrent += datetime.timedelta(hours=nextAddressDistance / truckSpeed) #18mph speed
         nextPackage.timeDelivery = truck.timeCurrent
         nextPackage.timeDepart = truck.timeDepart
 
@@ -230,13 +233,14 @@ truckDeliverPackages(truck3)
 truckDeliverPackages(truck2)
 
 selection = 0
+totalMileage = truck1.mileage + truck2.mileage + truck3.mileage
 # Command line interface keeps running until user exits by inputting 4
 while selection != '4':
     menu()
     selection = input("\nSelect an option: ")
     # Displays total mileage and all of the packages' status"
     if selection == '1':
-        print(f"Total mileage for the route: {truck1.mileage + truck2.mileage + truck3.mileage}")
+        print(f"Total mileage for the route: {totalMileage}")
         printHeaders()
         # End of day time is 5PM
         timeEOD = datetime.timedelta(hours=17)
@@ -250,6 +254,7 @@ while selection != '4':
         print("")
     # Search a package status by timestamp
     elif selection == '2':
+        print(f"Total mileage for the route: {totalMileage}")
         try:
             # Prompts a time to search
             time = input("Please enter time in HH:MM:SS format: ")
@@ -259,7 +264,7 @@ while selection != '4':
             # Prompts a package to search
             pkgID = input("Please enter a package ID: ")
             package = pkgHashmap.searchKey(int(pkgID))
-            # Checks the status of each package at the given time
+            # Checks the status of the package at the given time
             package.checkStatus(time)
 
             print("")
@@ -270,6 +275,7 @@ while selection != '4':
             print("Invalid input! Please try again.\n")
     # Search all package status by timestamp
     elif selection == '3': 
+        print(f"Total mileage for the route: {totalMileage}")
         try:
             # Prompts a time to search
             time = input("Please enter time in HH:MM:SS format: ")
