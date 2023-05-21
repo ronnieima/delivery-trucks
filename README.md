@@ -3,7 +3,7 @@
 YouTube Demonstration (WIP)
 
 <h2>Description</h2>
-In this project, delivery vehicles will be routed using an algorithm that will enable them to make all delivery deadlines while covering the fewest possible miles.
+Given 40 packages to deliver, this project uses the Nearest Neighbor algorithm to find an optimal route for three delivery trucks to deliver all of the packages.
 <br />
 
 
